@@ -399,3 +399,37 @@ def plot_latent_space(model, loader, num_batches=100):
 
 # Visualize the latent space of the VAE
 plot_latent_space(model, val_loader, num_batches=100)
+
+
+#generate images from random latent space
+
+def generate_images_from_latent(model, latent_vectors):
+    """
+    Generate images from a given set of latent vectors.
+
+    Args:
+      model (nn.Module): Trained VAE model.
+      latent_vectors (Tensor): Latent vectors used to generate images.
+
+    Returns:
+      images (Tensor): Generated images from the VAE.
+    """
+    with torch.no_grad():
+        # Decode the latent vectors to generate new images
+        images = model.decoder(latent_vectors)
+    return images
+
+# Generate random latent vectors from a standard normal distribution
+latent_vectors = torch.randn(10, model.latent_dim, 1, 1)
+# Generate images from the random latent vectors
+images = generate_images_from_latent(model, latent_vectors)
+
+# Plot the generated images
+plt.figure(figsize=(10, 5))
+for i in range(10):
+    plt.subplot(2, 5, i + 1)
+    plt.imshow(images[i].squeeze(), cmap="gray")
+    plt.title(f"Image {i + 1}")
+    plt.axis("off")
+plt.tight_layout()
+plt.show()
